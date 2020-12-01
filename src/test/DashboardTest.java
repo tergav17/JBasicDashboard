@@ -1,17 +1,14 @@
-package main;
+package test;
 
 import dash.*;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
 
 //This class acts as a test suite to ensure that everything is working fine
 
-public class Main {
+public class DashboardTest {
 
     public static void main(String[] args) {
 
@@ -19,7 +16,7 @@ public class Main {
 
         Dashboard d = new Dashboard(Dashboard.Type.GENERIC, "Test Dashboard 1", 20, 8);
         Dashboard graph = new Dashboard(Dashboard.Type.GENERIC, "Logger", 24, 15);
-        Dashboard con = new Dashboard(Dashboard.Type.CONSOLE, "Console", 80, 25);
+        Dashboard con = new Dashboard(Dashboard.Type.CONSOLE, "Console", 45, 10);
         Dashboard plot = new Dashboard(Dashboard.Type.GENERIC, "Equation Plotter" , 24, 15);
 
         d.dashboardExitOnClose();

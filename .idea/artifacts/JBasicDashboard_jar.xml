@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="JBasicDashboard:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/JBasicDashboard_jar</output-path>
+    <root id="archive" name="JBasicDashboard.jar">
+      <element id="module-output" name="JBasicDashboard" />
+    </root>
+  </artifact>
+</component>

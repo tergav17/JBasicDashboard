@@ -196,4 +196,7 @@ public class Dashboard {
 		t.setRepeats(true);
 		t.start();
 	}
+
+	//Binds a mouse clicked listener to a generic dashboard
+
 }

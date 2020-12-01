@@ -80,6 +80,7 @@ public class GenericManager {
 		
 	}
 
+	//Draws an object onto the canvas
 	protected void drawObject(Object o) {
 		if (o instanceof JBTextLabel) {
 			//Handle the drawing of a TextLabel
@@ -271,7 +272,7 @@ public class GenericManager {
 	
 	//Removes an object from the dashboard
 	protected void remove(Object o) {
-		//Remove and update
+  		//Remove and update
 		content.remove(o);
 		update();
 	}
