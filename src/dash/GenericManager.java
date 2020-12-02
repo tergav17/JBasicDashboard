@@ -176,6 +176,22 @@ public class GenericManager {
 			JBImage im = (JBImage) o;
 
 			canvas.drawImage(((JBImage) o).getImage(), im.getX() * sizeScalar, im.getY() * sizeScalar, im.getWidth() * sizeScalar, im.getHeight() * sizeScalar, null);
+		} else if (o instanceof JBTextInput) {
+			//Handle the drawing of a TextButton
+			JBTextInput ti = (JBTextInput) o;
+
+			if (ti.isSelected()) {
+				//Draw as selected
+				canvas.setColor(Color.LIGHT_GRAY);
+				canvas.fillRect(ti.getX() * sizeScalar, ti.getY() * sizeScalar, ti.getWidth() * sizeScalar, ti.getHeight() * sizeScalar);
+
+				canvas.setColor(Color.BLACK);
+				drawTextElement(ti.getVisibleContent(), ti.getX(), ti.getY(), ti.getWidth(), ti.getHeight(), false, false);
+			} else {
+				//Draw as unselected
+				canvas.setColor(Color.LIGHT_GRAY);
+				drawTextElement(ti.getVisibleContent(), ti.getX(), ti.getY(), ti.getWidth(), ti.getHeight(), false, true);
+			}
 		}
 	}
 
@@ -241,7 +257,11 @@ public class GenericManager {
 			return 0;
 		}
 	}
-	
+
+	//Returns the length of a string
+	protected int getStringWidth(String s) {
+		return canvas.getFontMetrics().stringWidth(s);
+	}
 	
 	//Draws a text element based on specifications
 	private void drawTextElement(String str, int x, int y, int w, int h, boolean cent, boolean bor) {
@@ -275,6 +295,7 @@ public class GenericManager {
 		else if (o instanceof JBNumericLogger) ((JBNumericLogger) o).setCallback(this);
 		else if (o instanceof JBTextHeader) ((JBTextHeader) o).setCallback(this);
 		else if (o instanceof JBImage) ((JBImage) o).setCallback(this);
+		else if (o instanceof JBTextInput) ((JBTextInput) o).setCallback(this);
 		
 		//Add and update
 		content.add(o);
@@ -305,11 +326,56 @@ public class GenericManager {
 					tb.setSelected(false);
 				}
 			}
+
+			if (o instanceof JBTextInput) {
+				JBTextInput ti = (JBTextInput) o;
+
+
+				if (pressed) {
+					if (ti.isFocused()) willUpdate = true;
+					ti.setFocused(false);
+				}
+
+				if ((sizeScalar * ti.getX()) <= x && x <= (sizeScalar * ti.getX()) + (sizeScalar * ti.getWidth()) && (sizeScalar * ti.getY()) <= y && y <= (sizeScalar * ti.getY()) + (sizeScalar * ti.getHeight())) {
+					if (!ti.isSelected()) willUpdate = true;
+					ti.setSelected(true);
+
+					if (pressed) {
+						ti.setFocused(true);
+						willUpdate = true;
+					}
+				} else {
+					if (ti.isSelected()) willUpdate = true;
+					ti.setSelected(false);
+				}
+			}
 		}
 		
 		if (willUpdate) update();
 	}
-	
+
+	//This function handles keyboard-related events
+	protected void dashboardKey(char c) {
+		for (Object o : content) {
+			if (o instanceof JBTextInput) {
+				JBTextInput ti = (JBTextInput) o;
+
+				if (ti.isFocused()) {
+					if (c < 127 && (c > 31 || c == 8 || c == 10)) {
+						if (c == 8) {
+							//Remove 1 off of the end of the string
+							if (ti.getContent().length() != 0) ti.setContent(ti.getContent().substring(0, ti.getContent().length()-1));
+						} else if (c == 10) {
+							ti.enterString(ti.getContent());
+							ti.update();
+						} else {
+							ti.setContent(ti.getContent() + c);
+						}
+					}
+				}
+			}
+		}
+	}
 	//Images down here, loaded once and never again
 	private Image error;
 	private Image inactive;

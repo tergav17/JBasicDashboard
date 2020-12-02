@@ -14,13 +14,22 @@ public class DashboardTest {
 
         Double times = 1.0;
 
-        Dashboard d = new Dashboard(Dashboard.Type.GENERIC, "Test Dashboard 1", 20, 8);
+        Dashboard d = new Dashboard(Dashboard.Type.GENERIC, "Test Dashboard 1", 20, 11);
         Dashboard graph = new Dashboard(Dashboard.Type.GENERIC, "Logger", 24, 15);
         Dashboard con = new Dashboard(Dashboard.Type.CONSOLE, "Console", 45, 10);
         Dashboard plot = new Dashboard(Dashboard.Type.GENERIC, "Equation Plotter" , 24, 15);
 
         d.dashboardExitOnClose();
 
+        d.add(new JBTextInput(new ActionListener() {
+
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Hello, " + e.getActionCommand());
+                ((JBTextInput) e.getSource()).setContent("");
+            }
+        }, "Test", 5, 9, 10, 1));
         d.add(new JBTextHeader("Hello There!", 5, 0, 10, 1, true, 18));
         d.add(new JBTextLabel("- Times Pressed -", 5, 5, 10, 1, true));
 

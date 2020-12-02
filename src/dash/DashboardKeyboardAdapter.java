@@ -28,8 +28,8 @@ public class DashboardKeyboardAdapter implements KeyListener{
 
     @Override
     public void keyTyped(KeyEvent e) {
-        // TODO Auto-generated method stub
-
+        if (dkl != null) dkl.keyTyped(e);
+        gm.dashboardKey(e.getKeyChar());
     }
 
 }
