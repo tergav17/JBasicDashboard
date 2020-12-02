@@ -24,9 +24,7 @@ public class DashboardTest {
         d.add(new JBTextHeader("Hello There!", 5, 0, 10, 1, true, 18));
         d.add(new JBTextLabel("- Times Pressed -", 5, 5, 10, 1, true));
 
-
         JBTextLabel counter = new JBTextLabel("0", 5, 6, 10, 1, true);
-
 
         d.add(counter);
 

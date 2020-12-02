@@ -19,6 +19,10 @@ public class GenericManager {
 	private JPanel panel;
 	private Graphics2D canvas;
 	private Font dashboardFont;
+
+	//Dashboard input objects
+	private DashboardMouseAdapter mouse;
+	private DashboardKeyboardAdapter key;
 	
 	//Dashboard content
 	private ArrayList<Object> content = new ArrayList<Object>();
@@ -43,15 +47,22 @@ public class GenericManager {
 		this.width = width;
 		this.height = height;
 		this.sizeScalar = sizeScalar;
-		
+
+		//Set panel state
+		panel.setFocusable(true);
+
 		//Set panel layout
 		GridLayout layout = new GridLayout(1, 1);
 		panel.setLayout(layout);
 		
 		//Set up mouse adapter
-		DashboardMouseAdapter mouse = new DashboardMouseAdapter(this); 
+		mouse = new DashboardMouseAdapter(this);
 		panel.addMouseListener(mouse);
 		panel.addMouseMotionListener(mouse);
+
+		//Set up keyboard adapter
+		key = new DashboardKeyboardAdapter(this);
+		panel.addKeyListener(key);
 		
 		//Set up background
 		BufferedImage tile = new BufferedImage(sizeScalar*width, sizeScalar*height, BufferedImage.TYPE_INT_ARGB);
@@ -305,4 +316,14 @@ public class GenericManager {
 	private Image nominal;
 	private Image notice;
 	private Image warning;
+
+	//Binds a mouse listener to a generic dashboard
+	public void bindDashboardMouseListener(DashboardMouseListener d) {
+		mouse.setDashboardMouseListener(d);
+	}
+
+	//Binds a keyboard listener to a generic dashboard
+	public void bindDashboardKeyboardListener(DashboardKeyboardListener d) {
+		key.setDashboardKeyboardListener(d);
+	}
 }

@@ -197,6 +197,17 @@ public class Dashboard {
 		t.start();
 	}
 
-	//Binds a mouse clicked listener to a generic dashboard
+	//Binds a mouse listener to a generic dashboard
+	public void bindDashboardMouseListener(DashboardMouseListener d) {
+		if (dType == Type.GENERIC) {
+			gm.bindDashboardMouseListener(d);
+		} else System.err.println("Incorrect Dashboard Call Type");
+	}
 
+	//Binds a keyboard listener to a generic dashboard
+	public void bindDashboardKeyboardListener(DashboardKeyboardListener d) {
+		if (dType == Type.GENERIC) {
+			gm.bindDashboardKeyboardListener(d);
+		} else System.err.println("Incorrect Dashboard Call Type");
+	}
 }
