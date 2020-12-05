@@ -1,8 +1,6 @@
 package dash;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,11 +13,15 @@ public class Dashboard {
 	
 	//Controls the size of a grid square
 	public static final int sizeScalar = 15;
-	
+
+	//Type enums
 	public enum Type {
 		GENERIC,
 		CONSOLE
 	}
+
+	public static final Type GENERIC = Type.GENERIC;
+	public static final Type CONSOLE = Type.CONSOLE;
 	
 	//GUI Objects
 	private JFrame frame;
@@ -33,10 +35,18 @@ public class Dashboard {
 	private GenericManager gm = null;
 	
 	public Dashboard(Type t, String name, int width, int height) {
+		createDashboard(t, name, width, height, null);
+	}
+
+	public Dashboard(Type t, String name, int width, int height, Image icon) {
+		createDashboard(t, name, width, height, icon);
+	}
+
+	private void createDashboard(Type t, String name, int width, int height, Image icon) {
 		startGarbageCollector();
 
 		dType = t;
-		
+
 		//Set up JFrame for use with generic dashboard
 		if (t == Type.GENERIC) {
 			//Create JFrame object
@@ -46,39 +56,43 @@ public class Dashboard {
 			//Set up JPanel attributes
 			panel = new JPanel();
 			panel.setPreferredSize(new Dimension(width * sizeScalar, height * sizeScalar));
-		
+
 			gm = new GenericManager(panel, sizeScalar, width, height);
-			
+
 			//Set up JFrame attributes
 			frame.add(panel);
 			frame.pack();
+			if (icon == null) frame.setIconImage(ResourceLoader.getImage("/nominal.png"));
+			else frame.setIconImage(icon);
 			frame.setResizable(false);
 			frame.setVisible(true);
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 			gm.update();
-			
-		//Otherwise, set up as a console
+
+			//Otherwise, set up as a console
 		} else if (t == Type.CONSOLE) {
 			//Create JFrame object
 			frame = new JFrame(name);
-			
+
 			//Create text area for console
 			JTextArea textArea = new JTextArea();
 			textArea.setRows(height);
 			textArea.setColumns(width);
-			
+
 			//Text area configuration
-		    textArea.setBackground(Color.BLACK);
-		    textArea.setForeground(Color.LIGHT_GRAY);
-		    textArea.setEditable(false);
-		    textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-		    
-		    //Set up the console manager
-		    cm = new ConsoleManager(textArea);
-		    
-		    //Set of JFrame with text area
-		    frame.add(textArea);
+			textArea.setBackground(Color.BLACK);
+			textArea.setForeground(Color.LIGHT_GRAY);
+			if (icon == null) frame.setIconImage(ResourceLoader.getImage("/nominal.png"));
+			else frame.setIconImage(icon);
+			textArea.setEditable(false);
+			textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+
+			//Set up the console manager
+			cm = new ConsoleManager(textArea);
+
+			//Set of JFrame with text area
+			frame.add(textArea);
 			frame.pack();
 			frame.setResizable(false);
 			frame.setVisible(true);
@@ -89,7 +103,7 @@ public class Dashboard {
 			System.err.println("Bad Dashboard Type!");
 		}
 	}
-	
+
 	public void dashboardExitOnClose() {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}

@@ -26,7 +26,7 @@ public class JBTextInput {
 	
 	//This function is called when the button is pressed
 	public void enterString(String s) {
-		ActionEvent aEvent = new ActionEvent(this, 0, s);
+		ActionEvent aEvent = new ActionEvent(this, 0, "Enter");
 		if (event != null) event.actionPerformed(aEvent);
 	}
 	
@@ -48,6 +48,7 @@ public class JBTextInput {
 
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
+		update();
 	}
 
 	public boolean isFocused() {

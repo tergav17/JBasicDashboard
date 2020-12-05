@@ -192,6 +192,34 @@ public class GenericManager {
 				canvas.setColor(Color.LIGHT_GRAY);
 				drawTextElement(ti.getVisibleContent(), ti.getX(), ti.getY(), ti.getWidth(), ti.getHeight(), false, true);
 			}
+		} else if (o instanceof JBHorizontalSlider) {
+			//Handle the drawing of a HorizontalSlider
+			JBHorizontalSlider hs = (JBHorizontalSlider) o;
+
+			canvas.setColor(Color.LIGHT_GRAY);
+			if (hs.isSelected()) {
+				canvas.fillRect(hs.getX() * sizeScalar, hs.getY() * sizeScalar, hs.getWidth() * sizeScalar, sizeScalar);
+				canvas.setColor(Color.BLACK);
+			}
+
+			canvas.fillRect((hs.getX() * sizeScalar) + hs.getRealPos(), hs.getY() * sizeScalar, sizeScalar, sizeScalar);
+
+			canvas.setColor(Color.LIGHT_GRAY);
+			canvas.drawRect(hs.getX() * sizeScalar, hs.getY() * sizeScalar, hs.getWidth() * sizeScalar, sizeScalar);
+		} else if (o instanceof JBVerticalSlider) {
+			//Handle the drawing of a VerticalSlider
+			JBVerticalSlider vs = (JBVerticalSlider) o;
+
+			canvas.setColor(Color.LIGHT_GRAY);
+			if (vs.isSelected()) {
+				canvas.fillRect(vs.getX() * sizeScalar, vs.getY() * sizeScalar, sizeScalar, vs.getHeight() * sizeScalar);
+				canvas.setColor(Color.BLACK);
+			}
+
+			canvas.fillRect(vs.getX() * sizeScalar, (vs.getY() * sizeScalar) + vs.getRealPos(), sizeScalar, sizeScalar);
+
+			canvas.setColor(Color.LIGHT_GRAY);
+			canvas.drawRect(vs.getX() * sizeScalar, vs.getY() * sizeScalar, sizeScalar, sizeScalar * vs.getHeight());
 		}
 	}
 
@@ -286,6 +314,7 @@ public class GenericManager {
 	//Adds an object into the dashboard
 	protected void add(Object o) {
 		//Set correct callback for objects
+		//This could have been done better with interfaces, but I am a big dumb idiot brain so I didn't do that
 		if (o instanceof JBLineDivider) ((JBLineDivider) o).setCallback(this);
 		else if (o instanceof JBStatusIcon) ((JBStatusIcon) o).setCallback(this);
 		else if (o instanceof JBTextButton) ((JBTextButton) o).setCallback(this);
@@ -296,7 +325,9 @@ public class GenericManager {
 		else if (o instanceof JBTextHeader) ((JBTextHeader) o).setCallback(this);
 		else if (o instanceof JBImage) ((JBImage) o).setCallback(this);
 		else if (o instanceof JBTextInput) ((JBTextInput) o).setCallback(this);
-		
+		else if (o instanceof JBHorizontalSlider) ((JBHorizontalSlider) o).setCallback(this);
+		else if (o instanceof JBVerticalSlider) ((JBVerticalSlider) o).setCallback(this);
+
 		//Add and update
 		content.add(o);
 		update();
@@ -310,54 +341,92 @@ public class GenericManager {
 	}
 	
 	//This function handles mouse-related events
-	protected void dashboardMouse(int x, int y, boolean pressed) {
-		boolean willUpdate = false;
+	protected void dashboardMouse(int x, int y, boolean pressed, boolean down) {
 		for (Object o : content) {
 			if (o instanceof JBTextButton) {
+				//Mouse handling for JBTextButton
 				JBTextButton tb = (JBTextButton) o;
 				
 				if ((sizeScalar * tb.getX()) <= x && x <= (sizeScalar * tb.getX()) + (sizeScalar * tb.getWidth()) && (sizeScalar * tb.getY()) <= y && y <= (sizeScalar * tb.getY()) + (sizeScalar * tb.getHeight())) {
-					if (!tb.isSelected()) willUpdate = true;
 					tb.setSelected(true);
 					
 					if (pressed) tb.pressButton();
 				} else {
-					if (tb.isSelected()) willUpdate = true;
 					tb.setSelected(false);
 				}
 			}
 
 			if (o instanceof JBTextInput) {
+				//Mouse handling for JBTextInput
 				JBTextInput ti = (JBTextInput) o;
 
 
 				if (pressed) {
-					if (ti.isFocused()) willUpdate = true;
 					ti.setFocused(false);
 				}
 
 				if ((sizeScalar * ti.getX()) <= x && x <= (sizeScalar * ti.getX()) + (sizeScalar * ti.getWidth()) && (sizeScalar * ti.getY()) <= y && y <= (sizeScalar * ti.getY()) + (sizeScalar * ti.getHeight())) {
-					if (!ti.isSelected()) willUpdate = true;
 					ti.setSelected(true);
 
 					if (pressed) {
 						ti.setFocused(true);
-						willUpdate = true;
 					}
 				} else {
-					if (ti.isSelected()) willUpdate = true;
 					ti.setSelected(false);
 				}
+			} else if (o instanceof JBHorizontalSlider) {
+				//Mouse handling for JBHorizontalSlider
+
+				JBHorizontalSlider hs = (JBHorizontalSlider) o;
+
+				if ((sizeScalar * hs.getX()) <= x && x <= (sizeScalar * hs.getX()) + (sizeScalar * hs.getWidth()) && (sizeScalar * hs.getY()) <= y && y <= (sizeScalar * hs.getY()) + (sizeScalar * 1)) {
+					hs.setSelected(true);
+
+					if (down) {
+
+						int diff = x - (sizeScalar * hs.getX());
+						diff -= (sizeScalar / 2);
+						int bound = (hs.getWidth() * sizeScalar) - sizeScalar;
+						if (diff < 0) diff = 0;
+						if (diff > bound) diff = bound;
+
+						hs.setRealPos(diff);
+					}
+				} else {
+					hs.setSelected(false);
+				}
+
+			} else if (o instanceof JBVerticalSlider) {
+				//Mouse handling for JBVerticalSlider
+
+				JBVerticalSlider vs = (JBVerticalSlider) o;
+
+				if ((sizeScalar * vs.getX()) <= x && x <= (sizeScalar * vs.getX()) + (sizeScalar * 1) && (sizeScalar * vs.getY()) <= y && y <= (sizeScalar * vs.getY()) + (sizeScalar * vs.getHeight())) {
+					vs.setSelected(true);
+
+					if (down) {
+
+						int diff = y - (sizeScalar * vs.getY());
+						diff -= (sizeScalar / 2);
+						int bound = (vs.getHeight() * sizeScalar) - sizeScalar;
+						if (diff < 0) diff = 0;
+						if (diff > bound) diff = bound;
+
+						vs.setRealPos(diff);
+					}
+				} else {
+					vs.setSelected(false);
+				}
+
 			}
 		}
-		
-		if (willUpdate) update();
 	}
 
 	//This function handles keyboard-related events
 	protected void dashboardKey(char c) {
 		for (Object o : content) {
 			if (o instanceof JBTextInput) {
+				//Keyboard handling for JBTextInput
 				JBTextInput ti = (JBTextInput) o;
 
 				if (ti.isFocused()) {

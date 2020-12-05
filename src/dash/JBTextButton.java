@@ -46,6 +46,7 @@ public class JBTextButton {
 
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
+		update();
 	}
 
 	public void setEvent(ActionListener event) {

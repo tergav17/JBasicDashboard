@@ -31,6 +31,7 @@ public class JBImage {
 
     public void setImage(BufferedImage image) {
         this.image = image;
+        update();
     }
 
     public int getX() {
@@ -38,6 +39,7 @@ public class JBImage {
     }
 
     public void setX(int x) {
+        update();
         this.x = x;
     }
 
@@ -47,6 +49,7 @@ public class JBImage {
 
     public void setY(int y) {
         this.y = y;
+        update();
     }
 
     public int getWidth() {
@@ -55,6 +58,7 @@ public class JBImage {
 
     public void setWidth(int width) {
         this.width = width;
+        update();
     }
 
     public int getHeight() {
@@ -63,5 +67,6 @@ public class JBImage {
 
     public void setHeight(int height) {
         this.height = height;
+        update();
     }
 }

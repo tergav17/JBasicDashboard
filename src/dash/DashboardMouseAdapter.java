@@ -8,6 +8,7 @@ public class DashboardMouseAdapter implements MouseMotionListener, MouseListener
 
 	GenericManager gm;
 	DashboardMouseListener dml = null;
+	boolean down = false;
 	
 	protected DashboardMouseAdapter(GenericManager gm) {
 		this.gm = gm;
@@ -20,17 +21,18 @@ public class DashboardMouseAdapter implements MouseMotionListener, MouseListener
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (dml != null) dml.mouseClicked(e);
-		gm.dashboardMouse(e.getX(), e.getY(), true);
+		gm.dashboardMouse(e.getX(), e.getY(), e.getButton() == MouseEvent.BUTTON1, e.getButton() == MouseEvent.BUTTON1);
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON1) down = true;
 		if (dml != null) dml.mousePressed(e);
-		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON1) down = false;
 		if (dml != null) dml.mouseReleased(e);
 	}
 
@@ -50,13 +52,14 @@ public class DashboardMouseAdapter implements MouseMotionListener, MouseListener
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (dml != null) dml.mouseDragged(e);
+		gm.dashboardMouse(e.getX(), e.getY(), false, down);
 		
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if (dml != null) dml.mouseMoved(e);
-		gm.dashboardMouse(e.getX(), e.getY(), false);
+		gm.dashboardMouse(e.getX(), e.getY(), false, down);
 		
 	}
 

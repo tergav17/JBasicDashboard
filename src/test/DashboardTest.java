@@ -14,10 +14,10 @@ public class DashboardTest {
 
         Double times = 1.0;
 
-        Dashboard d = new Dashboard(Dashboard.Type.GENERIC, "Test Dashboard 1", 20, 11);
-        Dashboard graph = new Dashboard(Dashboard.Type.GENERIC, "Logger", 24, 15);
-        Dashboard con = new Dashboard(Dashboard.Type.CONSOLE, "Console", 45, 10);
-        Dashboard plot = new Dashboard(Dashboard.Type.GENERIC, "Equation Plotter" , 24, 15);
+        Dashboard d = new Dashboard(Dashboard.GENERIC, "Test Dashboard 1", 20, 12);
+        Dashboard graph = new Dashboard(Dashboard.GENERIC, "Logger", 24, 15);
+        Dashboard con = new Dashboard(Dashboard.CONSOLE, "Console", 45, 10);
+        Dashboard plot = new Dashboard(Dashboard.GENERIC, "Equation Plotter" , 24, 15);
 
         d.dashboardExitOnClose();
 
@@ -26,10 +26,16 @@ public class DashboardTest {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Hello, " + e.getActionCommand());
+                System.out.println(((JBTextInput)e.getSource()).getContent());
                 ((JBTextInput) e.getSource()).setContent("");
             }
-        }, "Test", 5, 9, 10, 1));
+        }, "Text Input Box!", 5, 8, 10, 1));
+
+        JBHorizontalSlider hs = new JBHorizontalSlider(5, 10, 10);
+        hs.setMax(25);
+        d.add(hs);
+
+
         d.add(new JBTextHeader("Hello There!", 5, 0, 10, 1, true, 18));
         d.add(new JBTextLabel("- Times Pressed -", 5, 5, 10, 1, true));
 
@@ -37,12 +43,19 @@ public class DashboardTest {
 
         d.add(counter);
 
-        JBNumericLogger g = new JBNumericLogger("Button Presses", 0, 0, 24, 15, "Presses", 5);
+        JBNumericLogger g = new JBNumericLogger("Slider", 0, 0, 24, 15, "Value", 5);
 
         g.getGraph().setYMax(25);
 
         Tracker t = new Tracker(0.0, Color.green);
         g.addTracker(t);
+
+        hs.setEvent(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                t.setValue(((JBHorizontalSlider) e.getSource()).getValue());
+            }
+        });
 
         d.add(new JBTextButton(new ActionListener() {
 
@@ -51,9 +64,8 @@ public class DashboardTest {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                count++;
 
-                t.setValue((double) count);
+                count++;
 
                 counter.setContent("" + count);
             }
