@@ -20,9 +20,28 @@ public class Dashboard {
 		CONSOLE
 	}
 
+	//Defined values
 	public static final Type GENERIC = Type.GENERIC;
 	public static final Type CONSOLE = Type.CONSOLE;
-	
+
+	public static final int MIDDLE = 0;
+	public static final int TOPLEFT = 1;
+	public static final int TOP = 2;
+	public static final int TOPRIGHT = 3;
+	public static final int RIGHT = 4;
+	public static final int BOTTOMRIGHT = 5;
+	public static final int BOTTOM = 6;
+	public static final int BOTTOMLEFT = 7;
+	public static final int LEFT = 8;
+
+	public static final JBStatusIcon.State INACTIVE = JBStatusIcon.State.INACTIVE;
+	public static final JBStatusIcon.State NOMINAL = JBStatusIcon.State.NOMINAL;
+	public static final JBStatusIcon.State WARNING = JBStatusIcon.State.WARNING;
+	public static final JBStatusIcon.State ERROR = JBStatusIcon.State.ERROR;
+	public static final JBStatusIcon.State NOTICE = JBStatusIcon.State.NOTICE;
+
+
+
 	//GUI Objects
 	private JFrame frame;
 	private JPanel panel;
@@ -142,6 +161,16 @@ public class Dashboard {
 
 		if (dType == Type.CONSOLE) {
 			return cm.scanChar();
+		} else System.err.println("Incorrect Dashboard Call Type");
+		return null;
+	}
+
+	//Scan in char from console
+	public Character getChar() {
+		if (!frame.isDisplayable()) return null;
+
+		if (dType == Type.CONSOLE) {
+			return cm.getChar();
 		} else System.err.println("Incorrect Dashboard Call Type");
 		return null;
 	}

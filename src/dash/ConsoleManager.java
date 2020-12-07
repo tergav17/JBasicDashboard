@@ -142,9 +142,21 @@ public class ConsoleManager {
 		}
 	}
 
+	//Returns a char from the input buffer if one exists, otherwise returns 0
+	protected Character getChar() {
+		if (inputBuffer.size() > 0) {
+			Character c = inputBuffer.get(0);
+			inputBuffer.remove(0);
+
+			return c;
+		} else {
+			return 0;
+		}
+
+	}
 	//Waits, as to not eat up all of the CPU power lol
 	//Folks, don't try this one at home
-	protected int forfit() {
+	private int forfit() {
 
 		//getParent() from hell
 		if (!textArea.getParent().getParent().getParent().getParent().isDisplayable()) return 1;
