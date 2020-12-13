@@ -204,3 +204,7 @@ hs.setEvent(new ActionListener() {
   }
 });
 ```
+
+### Keyboard and Mouse Listeners
+
+If direct mouse and keyboard input is needed for a generic dashboard, listeners can be attatched to the dashboards. The ```DashboardKeyboardListener``` and ```DashboardMouseListener``` interfaces work just the same as mouse and keyboard listeners, and can be bound to a dashboard using ```bindDashboardMouseListener()``` and ```bindDashboardKeyboardListener()```.
