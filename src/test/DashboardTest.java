@@ -115,5 +115,14 @@ public class DashboardTest {
         p.update();
 
         con.print("Done");
+
+        while (true) {
+            con.println(Math.random() + "");
+            try {
+                Thread.sleep((long) (Math.random() * 1000));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

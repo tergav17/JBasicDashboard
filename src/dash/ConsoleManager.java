@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.JTextArea;
+import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
 
 //Controls how the text area on a console dashboard acts
@@ -12,13 +12,15 @@ public class ConsoleManager {
 	
 	//Reference to working textArea
 	private JTextArea textArea;
+
+	private String buffer;
 	
 	//Input buffer from keyboard adapter
 	protected List<Character> inputBuffer = Collections.synchronizedList(new ArrayList<Character>());
 	
 	protected ConsoleManager(JTextArea textArea) {
 		this.textArea = textArea;
-		
+
 		//Add keyboard adapter
 		textArea.addKeyListener(new ConsoleKeyboardAdapter(this));
 		textArea.setLineWrap(false);
@@ -36,7 +38,8 @@ public class ConsoleManager {
 			if (i != textArea.getRows() - 1) blank = blank + "\n";
 		}
 		
-		textArea.setText(blank);
+		buffer = blank;
+		update();
 		
 	}
 	
@@ -44,6 +47,21 @@ public class ConsoleManager {
 	protected void print(String s) {
 		for (Character c : s.toCharArray()) {
 			putChar(c);
+		}
+	}
+
+	//Updates the content of the textArea
+	//Ensures that textArea doesn't lockup and crash
+	protected void update() {
+		try {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					textArea.setText(buffer);
+				}
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -85,9 +103,10 @@ public class ConsoleManager {
 		}
 		if (cursorY == textArea.getRows()) {
 			cursorY--;
-			textArea.setText(textArea.getText().substring(textArea.getColumns() + 1));
-			textArea.append("\n");
-			for (int i = 0; i < textArea.getColumns(); i++) textArea.append(" ");
+			buffer = buffer.substring(textArea.getColumns() + 1);
+			buffer = buffer + "\n";
+			for (int i = 0; i < textArea.getColumns(); i++) buffer = buffer + " ";
+			update();
 		}
 		
 		drawCharAt('_', cursorX, cursorY);
@@ -96,7 +115,10 @@ public class ConsoleManager {
 	//Draws in a chararcter at a specific position
 	private void drawCharAt(Character c, int x, int y) {
 		int index = (y * (textArea.getColumns() + 1)) + x;
-		textArea.setText(textArea.getText().substring(0, index) + c + textArea.getText().substring(index + 1)); 
+
+		buffer = buffer.substring(0, index) + c + buffer.substring(index + 1);
+		update();
+
 	}
 	
 	//Scans in a string from the console
