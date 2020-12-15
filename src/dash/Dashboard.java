@@ -93,11 +93,11 @@ public class Dashboard {
 		} else if (t == Type.CONSOLE) {
 			//Create JFrame object
 			frame = new JFrame(name);
-
 			//Create text area for console
 			JTextArea textArea = new JTextArea();
 			textArea.setRows(height);
 			textArea.setColumns(width);
+
 
 			//Text area configuration
 			textArea.setBackground(Color.BLACK);
@@ -107,12 +107,22 @@ public class Dashboard {
 			textArea.setEditable(false);
 			textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
 
+
 			//Set up the console manager
 			cm = new ConsoleManager(textArea);
 
+
 			//Set of JFrame with text area
 			frame.add(textArea);
-			frame.pack();
+
+			//invokeLater till it starts working again, solution of champions
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					frame.pack();
+				}
+			});
+
 			frame.setResizable(false);
 			frame.setVisible(true);
 			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

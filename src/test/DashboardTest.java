@@ -12,11 +12,20 @@ public class DashboardTest {
 
     public static void main(String[] args) {
 
+        System.out.println("Starting test...");
+
         Double times = 1.0;
 
+        System.out.println("Generating Test Dashboard 1...");
         Dashboard d = new Dashboard(Dashboard.GENERIC, "Test Dashboard 1", 20, 12);
+
+        System.out.println("Generating Logger...");
         Dashboard graph = new Dashboard(Dashboard.GENERIC, "Logger", 24, 15);
+
+        System.out.println("Generating Console...");
         Dashboard con = new Dashboard(Dashboard.CONSOLE, "Console", 45, 10);
+
+        System.out.println("Generating Plotter");
         Dashboard plot = new Dashboard(Dashboard.GENERIC, "Equation Plotter" , 24, 15);
 
         d.dashboardExitOnClose();
@@ -115,14 +124,5 @@ public class DashboardTest {
         p.update();
 
         con.print("Done");
-
-        while (true) {
-            con.println(Math.random() + "");
-            try {
-                Thread.sleep((long) (Math.random() * 1000));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
