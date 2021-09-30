@@ -17,7 +17,7 @@ public class DashboardTest {
         Double times = 1.0;
 
         System.out.println("Generating Test Dashboard 1...");
-        Dashboard d = new Dashboard(Dashboard.GENERIC, "Test Dashboard 1", 20, 12);
+        Dashboard d = new Dashboard(Dashboard.GENERIC, "Test Dashboard 1", 20, 16);
 
         System.out.println("Generating Logger...");
         Dashboard graph = new Dashboard(Dashboard.GENERIC, "Logger", 24, 15);
@@ -66,19 +66,7 @@ public class DashboardTest {
             }
         });
 
-        d.add(new JBTextButton(new ActionListener() {
 
-
-            int count = 0;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                count++;
-
-                counter.setContent("" + count);
-            }
-        }, "Button!", 5, 2, 10, 2));
 
         d.update();
 

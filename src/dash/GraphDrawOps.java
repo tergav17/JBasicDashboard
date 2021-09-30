@@ -30,9 +30,9 @@ public class GraphDrawOps {
 		Point v2 = new Point((lg.getX() * sizeScalar) + ((5 + width) * sizeScalar), (lg.getY() * sizeScalar) + (2 * sizeScalar));
 		
 		//Draw named componenets
-		drawTextElement(lg.getName(), 0, 0, lg.getWidth(), 1, 0, false, canvas, sizeScalar);
-		drawTextElement(lg.getXAxis(), 0, lg.getHeight() - 1, lg.getWidth(), 1, 0, false, canvas, sizeScalar);
-		drawTextElement(lg.getYAxis(), 0, 0, 1, 1, -1, false, canvas, sizeScalar);
+		drawTextElement(lg.getName(), lg.getX(), lg.getY(), lg.getWidth(), 1, 0, false, canvas, sizeScalar);
+		drawTextElement(lg.getXAxis(), lg.getX(), lg.getY() + (lg.getHeight() - 1), lg.getWidth(), 1, 0, false, canvas, sizeScalar);
+		drawTextElement(lg.getYAxis(), lg.getX(), lg.getY(), 1, 1, -1, false, canvas, sizeScalar);
 		
 		//Axis time!
 		if (lg.getYMin() >= lg.getYMax() || lg.getXMin() >= lg.getYMax()) return;
@@ -51,8 +51,8 @@ public class GraphDrawOps {
 		} 
 		
 		//Draw the X axis numbers
-		drawNumber(lg.getXMax(), canvas, sizeScalar, lg.getWidth() - 6, lg.getHeight() - 3, 0);
-		drawNumber(lg.getXMin(), canvas, sizeScalar, 2, lg.getHeight() - 3, 0);
+		drawNumber(lg.getXMax(), canvas, sizeScalar, lg.getX() + (lg.getWidth() - 6), lg.getY() + (lg.getHeight() - 3), 0);
+		drawNumber(lg.getXMin(), canvas, sizeScalar, lg.getX() + 2, lg.getY() + (lg.getHeight() - 3), 0);
 		
 		BufferedImage lines = new BufferedImage((int) (v2.getX() - v1.getX()), (int) (v1.getY() - v2.getY()), BufferedImage.TYPE_INT_ARGB);
 		Graphics linesG = lines.getGraphics();
@@ -118,9 +118,9 @@ public class GraphDrawOps {
 		//Point v2 = new Point((p.getX() * sizeScalar) + ((5 + width) * sizeScalar), (p.getY() * sizeScalar) + (2 * sizeScalar));
 		
 		//Draw named componenets
-		drawTextElement(p.getName(), 0, 0, p.getWidth(), 1, 0, false, canvas, sizeScalar);
-		drawTextElement(p.getXAxis(), 0, p.getHeight() - 1, p.getWidth(), 1, 0, false, canvas, sizeScalar);
-		drawTextElement(p.getYAxis(), 0, 0, 1, 1, -1, false, canvas, sizeScalar);
+		drawTextElement(p.getName(), p.getX(), p.getY(), p.getWidth(), 1, 0, false, canvas, sizeScalar);
+		drawTextElement(p.getXAxis(), p.getX(), p.getY() + (p.getHeight() - 1), p.getWidth(), 1, 0, false, canvas, sizeScalar);
+		drawTextElement(p.getYAxis(), p.getX(), p.getY(), 1, 1, -1, false, canvas, sizeScalar);
 		
 		//Axis time!
 		if (p.getYMin() >= p.getYMax() || p.getXMin() >= p.getYMax()) return;
@@ -206,10 +206,10 @@ public class GraphDrawOps {
 			tx = (x * sizeScalar) + ((w * sizeScalar) - met.stringWidth(str)) / 2;
 		} else if (or == 1) {
 			//Draw shifted left
-			tx = (x * sizeScalar) - met.stringWidth(str);
+			tx = (x * sizeScalar) - met.stringWidth(str) ;
 		} else {
 			//Draw shifted right
-			tx = x * sizeScalar;
+			tx = x * sizeScalar + 2;
 		}
 		
 		canvas.drawString(str, tx, ty);

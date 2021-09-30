@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -198,28 +199,28 @@ public class GenericManager {
 
 			canvas.setColor(Color.LIGHT_GRAY);
 			if (hs.isSelected()) {
-				canvas.fillRect(hs.getX() * sizeScalar, hs.getY() * sizeScalar, hs.getWidth() * sizeScalar, sizeScalar);
+				canvas.fillRect(hs.getX() * sizeScalar, hs.getY() * sizeScalar, hs.getWidth() * sizeScalar - 1, sizeScalar - 1);
 				canvas.setColor(Color.BLACK);
 			}
 
-			canvas.fillRect((hs.getX() * sizeScalar) + hs.getRealPos(), hs.getY() * sizeScalar, sizeScalar, sizeScalar);
+			canvas.fillRect((hs.getX() * sizeScalar) + hs.getRealPos(), hs.getY() * sizeScalar, sizeScalar - 1, sizeScalar - 1);
 
 			canvas.setColor(Color.LIGHT_GRAY);
-			canvas.drawRect(hs.getX() * sizeScalar, hs.getY() * sizeScalar, hs.getWidth() * sizeScalar, sizeScalar);
+			canvas.drawRect(hs.getX() * sizeScalar, hs.getY() * sizeScalar, hs.getWidth() * sizeScalar - 1, sizeScalar - 1);
 		} else if (o instanceof JBVerticalSlider) {
 			//Handle the drawing of a VerticalSlider
 			JBVerticalSlider vs = (JBVerticalSlider) o;
 
 			canvas.setColor(Color.LIGHT_GRAY);
 			if (vs.isSelected()) {
-				canvas.fillRect(vs.getX() * sizeScalar, vs.getY() * sizeScalar, sizeScalar, vs.getHeight() * sizeScalar);
+				canvas.fillRect(vs.getX() * sizeScalar, vs.getY() * sizeScalar, sizeScalar - 1, vs.getHeight() * sizeScalar - 1);
 				canvas.setColor(Color.BLACK);
 			}
 
-			canvas.fillRect(vs.getX() * sizeScalar, (vs.getY() * sizeScalar) + vs.getRealPos(), sizeScalar, sizeScalar);
+			canvas.fillRect(vs.getX() * sizeScalar, (vs.getY() * sizeScalar) + vs.getRealPos(), sizeScalar - 1, sizeScalar - 1);
 
 			canvas.setColor(Color.LIGHT_GRAY);
-			canvas.drawRect(vs.getX() * sizeScalar, vs.getY() * sizeScalar, sizeScalar, sizeScalar * vs.getHeight());
+			canvas.drawRect(vs.getX() * sizeScalar, vs.getY() * sizeScalar, sizeScalar - 1, sizeScalar * vs.getHeight() - 1);
 		}
 	}
 
@@ -227,9 +228,12 @@ public class GenericManager {
 	protected void update() {
 		canvas.setColor(Color.BLACK);
 		canvas.fillRect(0, 0, width*sizeScalar, height*sizeScalar);
-		
-		for (Object o : content) {
-			drawObject(o);
+		try {
+			for (Object o : content) {
+				drawObject(o);
+			}
+		} catch (ConcurrentModificationException e) {
+			//Do nothing
 		}
 		panel.repaint();
 	}
@@ -306,9 +310,9 @@ public class GenericManager {
 			tx = x * sizeScalar;
 		}
 		
-		canvas.drawString(str, tx, ty);
+		canvas.drawString(str, tx + 2, ty);
 		
-		if (bor) canvas.drawRect(x * sizeScalar, y * sizeScalar, w * sizeScalar, h * sizeScalar);
+		if (bor) canvas.drawRect(x * sizeScalar, y * sizeScalar, w * sizeScalar - 1, h * sizeScalar - 1);
 	}
 	
 	//Adds an object into the dashboard
@@ -342,83 +346,87 @@ public class GenericManager {
 	
 	//This function handles mouse-related events
 	protected void dashboardMouse(int x, int y, boolean pressed, boolean down) {
-		for (Object o : content) {
-			if (o instanceof JBTextButton) {
-				//Mouse handling for JBTextButton
-				JBTextButton tb = (JBTextButton) o;
-				
-				if ((sizeScalar * tb.getX()) <= x && x <= (sizeScalar * tb.getX()) + (sizeScalar * tb.getWidth()) && (sizeScalar * tb.getY()) <= y && y <= (sizeScalar * tb.getY()) + (sizeScalar * tb.getHeight())) {
-					tb.setSelected(true);
-					
-					if (pressed) tb.pressButton();
-				} else {
-					tb.setSelected(false);
-				}
-			}
+		try {
+			for (Object o : content) {
+				if (o instanceof JBTextButton) {
+					//Mouse handling for JBTextButton
+					JBTextButton tb = (JBTextButton) o;
 
-			if (o instanceof JBTextInput) {
-				//Mouse handling for JBTextInput
-				JBTextInput ti = (JBTextInput) o;
+					if ((sizeScalar * tb.getX()) <= x && x <= (sizeScalar * tb.getX()) + (sizeScalar * tb.getWidth()) && (sizeScalar * tb.getY()) <= y && y <= (sizeScalar * tb.getY()) + (sizeScalar * tb.getHeight())) {
+						tb.setSelected(true);
 
-
-				if (pressed) {
-					ti.setFocused(false);
+						if (pressed) tb.pressButton();
+					} else {
+						tb.setSelected(false);
+					}
 				}
 
-				if ((sizeScalar * ti.getX()) <= x && x <= (sizeScalar * ti.getX()) + (sizeScalar * ti.getWidth()) && (sizeScalar * ti.getY()) <= y && y <= (sizeScalar * ti.getY()) + (sizeScalar * ti.getHeight())) {
-					ti.setSelected(true);
+				if (o instanceof JBTextInput) {
+					//Mouse handling for JBTextInput
+					JBTextInput ti = (JBTextInput) o;
+
 
 					if (pressed) {
-						ti.setFocused(true);
+						ti.setFocused(false);
 					}
-				} else {
-					ti.setSelected(false);
-				}
-			} else if (o instanceof JBHorizontalSlider) {
-				//Mouse handling for JBHorizontalSlider
 
-				JBHorizontalSlider hs = (JBHorizontalSlider) o;
+					if ((sizeScalar * ti.getX()) <= x && x <= (sizeScalar * ti.getX()) + (sizeScalar * ti.getWidth()) && (sizeScalar * ti.getY()) <= y && y <= (sizeScalar * ti.getY()) + (sizeScalar * ti.getHeight())) {
+						ti.setSelected(true);
 
-				if ((sizeScalar * hs.getX()) <= x && x <= (sizeScalar * hs.getX()) + (sizeScalar * hs.getWidth()) && (sizeScalar * hs.getY()) <= y && y <= (sizeScalar * hs.getY()) + (sizeScalar * 1)) {
-					hs.setSelected(true);
-
-					if (down) {
-
-						int diff = x - (sizeScalar * hs.getX());
-						diff -= (sizeScalar / 2);
-						int bound = (hs.getWidth() * sizeScalar) - sizeScalar;
-						if (diff < 0) diff = 0;
-						if (diff > bound) diff = bound;
-
-						hs.setRealPos(diff);
+						if (pressed) {
+							ti.setFocused(true);
+						}
+					} else {
+						ti.setSelected(false);
 					}
-				} else {
-					hs.setSelected(false);
-				}
+				} else if (o instanceof JBHorizontalSlider) {
+					//Mouse handling for JBHorizontalSlider
 
-			} else if (o instanceof JBVerticalSlider) {
-				//Mouse handling for JBVerticalSlider
+					JBHorizontalSlider hs = (JBHorizontalSlider) o;
 
-				JBVerticalSlider vs = (JBVerticalSlider) o;
+					if ((sizeScalar * hs.getX()) <= x && x <= (sizeScalar * hs.getX()) + (sizeScalar * hs.getWidth()) && (sizeScalar * hs.getY()) <= y && y <= (sizeScalar * hs.getY()) + (sizeScalar * 1)) {
+						hs.setSelected(true);
 
-				if ((sizeScalar * vs.getX()) <= x && x <= (sizeScalar * vs.getX()) + (sizeScalar * 1) && (sizeScalar * vs.getY()) <= y && y <= (sizeScalar * vs.getY()) + (sizeScalar * vs.getHeight())) {
-					vs.setSelected(true);
+						if (down) {
 
-					if (down) {
+							int diff = x - (sizeScalar * hs.getX());
+							diff -= (sizeScalar / 2);
+							int bound = (hs.getWidth() * sizeScalar) - sizeScalar;
+							if (diff < 0) diff = 0;
+							if (diff > bound) diff = bound;
 
-						int diff = y - (sizeScalar * vs.getY());
-						diff -= (sizeScalar / 2);
-						int bound = (vs.getHeight() * sizeScalar) - sizeScalar;
-						if (diff < 0) diff = 0;
-						if (diff > bound) diff = bound;
-
-						vs.setRealPos(diff);
+							hs.setRealPos(diff);
+						}
+					} else {
+						hs.setSelected(false);
 					}
-				} else {
-					vs.setSelected(false);
-				}
 
+				} else if (o instanceof JBVerticalSlider) {
+					//Mouse handling for JBVerticalSlider
+
+					JBVerticalSlider vs = (JBVerticalSlider) o;
+
+					if ((sizeScalar * vs.getX()) <= x && x <= (sizeScalar * vs.getX()) + (sizeScalar * 1) && (sizeScalar * vs.getY()) <= y && y <= (sizeScalar * vs.getY()) + (sizeScalar * vs.getHeight())) {
+						vs.setSelected(true);
+
+						if (down) {
+
+							int diff = y - (sizeScalar * vs.getY());
+							diff -= (sizeScalar / 2);
+							int bound = (vs.getHeight() * sizeScalar) - sizeScalar;
+							if (diff < 0) diff = 0;
+							if (diff > bound) diff = bound;
+
+							vs.setRealPos(diff);
+						}
+					} else {
+						vs.setSelected(false);
+					}
+
+				}
 			}
+		} catch (ConcurrentModificationException e) {
+			//Do nothing lol
 		}
 	}
 
